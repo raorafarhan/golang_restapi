@@ -3,11 +3,11 @@ package activity
 import "time"
 
 type ActivityCore struct {
-	ID         uint
-	Title      string
-	Email      string
-	Created_At time.Time
-	Updated_At time.Time
+	ID         uint      `json:"id"`
+	Title      string    `json:"title"`
+	Email      string    `json:"email"`
+	Created_At time.Time `json:"created_at"`
+	Updated_At time.Time `json:"updated_at"`
 }
 
 type UsecaseInterface interface {

@@ -8,21 +8,21 @@ import (
 
 type Activity struct {
 	gorm.Model
-	Tittle string
-	Email  string
+	Title string
+	Email string
 }
 
 func fromCore(data activity.ActivityCore) Activity {
 	return Activity{
-		Tittle: data.Title,
-		Email:  data.Email,
+		Title: data.Title,
+		Email: data.Email,
 	}
 }
 
 func (data *Activity) toCore() activity.ActivityCore {
 	return activity.ActivityCore{
 		ID:    data.ID,
-		Title: data.Tittle,
+		Title: data.Title,
 		Email: data.Email,
 	}
 }

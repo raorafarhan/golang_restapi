@@ -13,15 +13,15 @@ type ActivityCore struct {
 type UsecaseInterface interface {
 	GetAllActivity() (data []ActivityCore, err error)
 	GetOneActivity(id int) (data ActivityCore, err error)
-	CreateActivity(data ActivityCore) (row int, err error)
+	CreateActivity(data ActivityCore) (id int, data1 ActivityCore, err error)
 	UpdateActivity(data ActivityCore) (row int, err error)
 	DeleteActivity(id int) (row int, err error)
 }
 
 type DataInterface interface {
-	SelectAllAcivity() (data []ActivityCore, err error)
+	SelectAllActivity() (data []ActivityCore, err error)
 	SelectOneActivity(id int) (data ActivityCore, err error)
-	PostActivity(data ActivityCore) (row int, err error)
+	PostActivity(data ActivityCore) (id int, data1 ActivityCore, err error)
 	PatchActivity(data ActivityCore) (row int, err error)
 	DeleteActivity(id int) (row int, err error)
 }

@@ -16,19 +16,24 @@ func New(db *gorm.DB) activity.DataInterface {
 	}
 }
 
-func (repo *dataActivity) PostActivity(data activity.ActivityCore) (row int, err error) {
-	var activity Activity
-	activity.Tittle = data.Title
-	activity.Email = data.Email
+func (repo *dataActivity) PostActivity(data activity.ActivityCore) (int, activity.ActivityCore, error) {
+	var activityPost Activity
+	activityPost.Title = data.Title
+	activityPost.Email = data.Email
 
-	tx := repo.db.Create(&activity)
+	tx := repo.db.Create(&activityPost)
 	if tx.Error != nil {
-		return -1, tx.Error
+		return 0, activity.ActivityCore{}, tx.Error
 	}
-	return int(tx.RowsAffected), nil
+	tx1 := repo.db.Where("title = ? AND email= ?", activityPost.Title, activityPost.Email).First(&activityPost)
+	if tx1.Error != nil {
+		return 0, activity.ActivityCore{}, tx.Error
+	}
+	activityData := activityPost.toCore()
+	return int(activityData.ID), activityData, nil
 }
 
-func (repo *dataActivity) SelectAllAcivity() ([]activity.ActivityCore, error) {
+func (repo *dataActivity) SelectAllActivity() ([]activity.ActivityCore, error) {
 	var activites []Activity
 	tx := repo.db.Find(&activites)
 	if tx.Error != nil {
@@ -68,7 +73,7 @@ func (repo *dataActivity) PatchActivity(data activity.ActivityCore) (int, error)
 	}
 
 	if data.Title != "" {
-		activityUpdate.Tittle = data.Title
+		activityUpdate.Title = data.Title
 	}
 
 	tx := repo.db.Save(&activityUpdate)

@@ -15,19 +15,19 @@ func NewActivityUsecase(data activity.DataInterface) activity.UsecaseInterface {
 	}
 }
 
-func (usecase *activityUsecase) CreateActivity(data activity.ActivityCore) (row int, err error) {
+func (usecase *activityUsecase) CreateActivity(data activity.ActivityCore) (id int, data1 activity.ActivityCore, err error) {
 	if data.Title == "" || data.Email == "" {
-		return -1, errors.New("title cannot be null")
+		return 0, activity.ActivityCore{}, errors.New("title cannot be null")
 	}
-	row, err = usecase.activityData.PostActivity(data)
+	id, _, err = usecase.activityData.PostActivity(data)
 	if err != nil {
-		return -1, err
+		return 0, activity.ActivityCore{}, err
 	}
-	return row, err
+	return id, activity.ActivityCore{}, err
 }
 
 func (usecase *activityUsecase) GetAllActivity() (data []activity.ActivityCore, err error) {
-	data, err = usecase.activityData.SelectAllAcivity()
+	data, err = usecase.activityData.SelectAllActivity()
 	if err != nil {
 		return nil, err
 	}

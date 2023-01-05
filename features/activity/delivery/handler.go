@@ -33,16 +33,13 @@ func (handler *activityDelivery) CreateActivity(c echo.Context) error {
 		return controllers.FailedResponseBadRequest(c)
 	}
 
-	row, err := handler.activityUsecase.CreateActivity(ToCore(data))
+	id, _, err := handler.activityUsecase.CreateActivity(ToCore(data))
 	if err != nil {
 		return controllers.FailedResponseBadRequest(c)
 	}
+	dataId, _ := handler.activityUsecase.GetOneActivity(id)
 
-	if row != 1 {
-		return controllers.FailedResponseBadRequest(c)
-	}
-
-	return controllers.SuccessCreatedResponse(c, data)
+	return controllers.SuccessCreatedResponse(c, dataId)
 }
 
 func (handler *activityDelivery) GetAllActivity(c echo.Context) error {

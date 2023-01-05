@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"skyshi/features/activity"
 
-	"skyshi/utils/helper"
+	controllers "skyshi/features/activity/controllers"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -30,19 +30,19 @@ func (handler *activityDelivery) CreateActivity(c echo.Context) error {
 	errBind := c.Bind(&data)
 
 	if errBind != nil {
-		return helper.FailedResponseBadRequest(c)
+		return controllers.FailedResponseBadRequest(c)
 	}
 
 	row, err := handler.activityUsecase.CreateActivity(ToCore(data))
 	if err != nil {
-		return helper.FailedResponseBadRequest(c)
+		return controllers.FailedResponseBadRequest(c)
 	}
 
 	if row != 1 {
-		return helper.FailedResponseBadRequest(c)
+		return controllers.FailedResponseBadRequest(c)
 	}
 
-	return helper.SuccessCreatedResponse(c, data)
+	return controllers.SuccessCreatedResponse(c, data)
 }
 
 func (handler *activityDelivery) GetAllActivity(c echo.Context) error {
@@ -50,7 +50,7 @@ func (handler *activityDelivery) GetAllActivity(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, (err.Error()))
 	}
-	return helper.NewSuccesResponse(c, data)
+	return controllers.NewSuccesResponse(c, data)
 }
 
 func (handler *activityDelivery) GetOneActivity(c echo.Context) error {
@@ -58,9 +58,9 @@ func (handler *activityDelivery) GetOneActivity(c echo.Context) error {
 	idConv, _ := strconv.Atoi(id)
 	data, err := handler.activityUsecase.GetOneActivity(idConv)
 	if err != nil {
-		return helper.FailedResponseNotFound(c, id)
+		return controllers.FailedResponseNotFound(c, id)
 	}
-	return helper.NewSuccesResponse(c, data)
+	return controllers.NewSuccesResponse(c, data)
 }
 
 func (handler *activityDelivery) UpdateActivity(c echo.Context) error {
@@ -68,17 +68,17 @@ func (handler *activityDelivery) UpdateActivity(c echo.Context) error {
 	idConv, _ := strconv.Atoi(id)
 	_, err := handler.activityUsecase.GetOneActivity(idConv)
 	if err != nil {
-		return helper.FailedResponseNotFound(c, id)
+		return controllers.FailedResponseNotFound(c, id)
 	}
 	var data ActivityRequest
 	errBind := c.Bind(&data)
 
 	if data.Title == "" {
-		return helper.FailedResponseBadRequest(c)
+		return controllers.FailedResponseBadRequest(c)
 	}
 
 	if errBind != nil {
-		return helper.FailedResponseBadRequest(c)
+		return controllers.FailedResponseBadRequest(c)
 	}
 	updateCore := ToCore(data)
 	updateCore.ID = uint(idConv)
@@ -91,7 +91,7 @@ func (handler *activityDelivery) UpdateActivity(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, (err.Error()))
 	}
 	dataUpdate, _ := handler.activityUsecase.GetOneActivity(idConv)
-	return helper.NewSuccesResponse(c, dataUpdate)
+	return controllers.NewSuccesResponse(c, dataUpdate)
 }
 
 func (handler *activityDelivery) DeleteActivity(c echo.Context) error {
@@ -99,11 +99,11 @@ func (handler *activityDelivery) DeleteActivity(c echo.Context) error {
 	idConv, _ := strconv.Atoi(id)
 	row, err := handler.activityUsecase.DeleteActivity(idConv)
 	if err != nil {
-		return helper.FailedResponseNotFound(c, id)
+		return controllers.FailedResponseNotFound(c, id)
 	}
 
 	if row != 1 {
-		return helper.FailedResponseNotFound(c, id)
+		return controllers.FailedResponseNotFound(c, id)
 	}
-	return helper.SuccessDeleteResponse(c, nil)
+	return controllers.SuccessDeleteResponse(c, nil)
 }

@@ -16,17 +16,22 @@ func New(db *gorm.DB) todo.DataInterface {
 	}
 }
 
-func (repo *dataTodo) PostTodo(data todo.TodoCore) (row int, err error) {
-	var todo Todo
-	todo.Title = data.Title
-	todo.Activity_Group_Id = data.Activity_Group_Id
-	todo.Is_Active = data.Is_Active
+func (repo *dataTodo) PostTodo(data todo.TodoCore) (int, todo.TodoCore, error) {
+	var todoPost Todo
+	todoPost.Title = data.Title
+	todoPost.Activity_Group_Id = data.Activity_Group_Id
+	todoPost.Is_Active = data.Is_Active
 
-	tx := repo.db.Create(&todo)
+	tx := repo.db.Create(&todoPost)
 	if tx.Error != nil {
-		return -1, tx.Error
+		return -1, todo.TodoCore{}, tx.Error
 	}
-	return int(tx.RowsAffected), nil
+	tx1 := repo.db.Where("title = ? AND activity_group_id= ? AND is_active= ?", todoPost.Title, todoPost.Activity_Group_Id, todoPost.Is_Active).First(&todoPost)
+	if tx1.Error != nil {
+		return 0, todo.TodoCore{}, tx.Error
+	}
+	todoData := todoPost.toCore()
+	return int(todoData.ID), todoData, nil
 }
 
 func (repo *dataTodo) SelectAllTodo(activity_group_id int) ([]todo.TodoCore, error) {

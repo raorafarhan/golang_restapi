@@ -15,7 +15,7 @@ type TodoCore struct {
 type UsecaseInterface interface {
 	GetAllTodo(activity_group_id int) (data []TodoCore, err error)
 	GetOneTodo(id int) (data TodoCore, err error)
-	CreateTodo(data TodoCore) (row int, err error)
+	CreateTodo(data TodoCore) (id int, data1 TodoCore, err error)
 	UpdateTodo(data TodoCore) (row int, err error)
 	DeleteTodo(id int) (row int, err error)
 }
@@ -23,7 +23,7 @@ type UsecaseInterface interface {
 type DataInterface interface {
 	SelectAllTodo(activity_group_id int) (data []TodoCore, err error)
 	SelectOneTodo(id int) (data TodoCore, err error)
-	PostTodo(data TodoCore) (row int, err error)
+	PostTodo(data TodoCore) (id int, data1 TodoCore, err error)
 	PatchTodo(data TodoCore) (row int, err error)
 	DeleteTodo(id int) (row int, err error)
 }

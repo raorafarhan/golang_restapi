@@ -15,15 +15,15 @@ func NewTodoUsecase(data todo.DataInterface) todo.UsecaseInterface {
 	}
 }
 
-func (usecase *todoUsecase) CreateTodo(data todo.TodoCore) (row int, err error) {
+func (usecase *todoUsecase) CreateTodo(data todo.TodoCore) (id int, data1 todo.TodoCore, err error) {
 	if data.Title == "" || data.Activity_Group_Id == 0 {
-		return -1, errors.New("title cannot be null")
+		return 0, todo.TodoCore{}, errors.New("title cannot be null")
 	}
-	row, err = usecase.todoData.PostTodo(data)
+	id, _, err = usecase.todoData.PostTodo(data)
 	if err != nil {
-		return -1, err
+		return 0, todo.TodoCore{}, err
 	}
-	return row, err
+	return id, todo.TodoCore{}, err
 }
 
 func (usecase *todoUsecase) GetAllTodo(activity_group_id int) (data []todo.TodoCore, err error) {

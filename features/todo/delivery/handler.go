@@ -33,16 +33,13 @@ func (handler *todoDelivery) CreateTodo(c echo.Context) error {
 		return controllers.FailedResponseBadRequest(c)
 	}
 
-	row, err := handler.todoUsecase.CreateTodo(ToCore(data))
+	id, _, err := handler.todoUsecase.CreateTodo(ToCore(data))
 	if err != nil {
 		return controllers.FailedResponseBadRequest(c)
 	}
 
-	if row != 1 {
-		return controllers.FailedResponseBadRequest(c)
-	}
-
-	return controllers.SuccessCreatedResponse(c, data)
+	data1, _ := handler.todoUsecase.GetOneTodo(id)
+	return controllers.SuccessCreatedResponse(c, data1)
 }
 
 func (handler *todoDelivery) GetAllTodo(c echo.Context) error {
@@ -78,14 +75,6 @@ func (handler *todoDelivery) UpdateTodo(c echo.Context) error {
 	}
 	var data TodoRequest
 	errBind := c.Bind(&data)
-
-	if data.Title == "" {
-		return controllers.FailedResponseBadRequest(c)
-	}
-	if data.Priority == "" {
-		return controllers.FailedResponseBadRequest(c)
-	}
-
 	if errBind != nil {
 		return controllers.FailedResponseBadRequest(c)
 	}

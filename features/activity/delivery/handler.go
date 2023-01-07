@@ -3,6 +3,7 @@ package delivery
 import (
 	"net/http"
 	"skyshi/features/activity"
+	"skyshi/features/todo"
 
 	controllers "skyshi/features/activity/controllers"
 	"strconv"
@@ -102,5 +103,5 @@ func (handler *activityDelivery) DeleteActivity(c echo.Context) error {
 	if row != 1 {
 		return controllers.FailedResponseNotFound(c, id)
 	}
-	return controllers.SuccessDeleteResponse(c, nil)
+	return controllers.SuccessDeleteResponse(c, todo.TodoCore{})
 }

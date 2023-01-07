@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"skyshi/features/todo"
 
 	"github.com/labstack/echo/v4"
 )
@@ -13,9 +14,9 @@ type BaseResponse struct {
 }
 
 type DeleteResponse struct {
-	Status  string      `json:"status"`
-	Massage string      `json:"massage"`
-	Data    interface{} `json:"data"`
+	Status  string        `json:"status"`
+	Massage string        `json:"massage"`
+	Data    todo.TodoCore `json:"data"`
 }
 
 func NewSuccesResponse(c echo.Context, data interface{}) error {
@@ -44,7 +45,7 @@ func FailedResponseNotFound(c echo.Context, data string) error {
 	return c.JSON(http.StatusNotFound, response)
 }
 
-func SuccessDeleteResponse(c echo.Context, data interface{}) error {
+func SuccessDeleteResponse(c echo.Context, data todo.TodoCore) error {
 	response := DeleteResponse{}
 	response.Status = "Success"
 	response.Massage = "Success"

@@ -8,8 +8,8 @@ type TodoCore struct {
 	Title             string    `json:"title"`
 	Is_Active         bool      `json:"is_active"`
 	Priority          string    `json:"priority"`
-	Created_At        time.Time `json:"created_at"`
-	Updated_At        time.Time `json:"updated_at"`
+	Created_At        time.Time `json:"createdAt"`
+	Updated_At        time.Time `json:"updatedAt"`
 }
 
 type UsecaseInterface interface {

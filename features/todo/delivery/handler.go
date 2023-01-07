@@ -30,12 +30,12 @@ func (handler *todoDelivery) CreateTodo(c echo.Context) error {
 	errBind := c.Bind(&data)
 
 	if errBind != nil {
-		return controllers.FailedResponseBadRequest(c)
+		return controllers.FailedResponseActivityBadRequest(c)
 	}
 
 	id, _, err := handler.todoUsecase.CreateTodo(ToCore(data))
 	if err != nil {
-		return controllers.FailedResponseBadRequest(c)
+		return controllers.FailedResponseBadRequest(c, err)
 	}
 
 	data1, _ := handler.todoUsecase.GetOneTodo(id)
@@ -53,7 +53,11 @@ func (handler *todoDelivery) GetAllTodo(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, (err.Error()))
 	}
-	return controllers.NewSuccesResponse(c, data)
+	if len(data) < 1 {
+		return controllers.NewSuccesResponseSlice(c, data)
+	} else {
+		return controllers.NewSuccesResponse(c, data)
+	}
 }
 
 func (handler *todoDelivery) GetOneTodo(c echo.Context) error {
@@ -71,12 +75,12 @@ func (handler *todoDelivery) UpdateTodo(c echo.Context) error {
 	idConv, _ := strconv.Atoi(id)
 	_, err := handler.todoUsecase.GetOneTodo(idConv)
 	if err != nil {
-		return controllers.FailedResponseNotFound(c, id)
+		return controllers.FailedGetOneTodoNotFound(c, id)
 	}
 	var data TodoRequest
 	errBind := c.Bind(&data)
 	if errBind != nil {
-		return controllers.FailedResponseBadRequest(c)
+		return controllers.FailedResponseBadRequest(c, err)
 	}
 	updateCore := ToCore(data)
 	updateCore.ID = uint(idConv)
@@ -97,11 +101,11 @@ func (handler *todoDelivery) DeleteTodo(c echo.Context) error {
 	idConv, _ := strconv.Atoi(id)
 	row, err := handler.todoUsecase.DeleteTodo(idConv)
 	if err != nil {
-		return controllers.FailedResponseNotFound(c, id)
+		return controllers.FailedGetOneTodoNotFound(c, id)
 	}
 
 	if row != 1 {
-		return controllers.FailedResponseNotFound(c, id)
+		return controllers.FailedGetOneTodoNotFound(c, id)
 	}
-	return controllers.SuccessDeleteResponse(c, nil)
+	return controllers.SuccessDeleteResponse(c, todo.TodoCore{})
 }

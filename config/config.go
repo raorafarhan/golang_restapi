@@ -40,12 +40,12 @@ func initConfig() *AppConfig {
 		log.Fatal(err)
 	}
 
-	defConfig.DB_USERNAME = os.Getenv("DB_USERNAME")
-	defConfig.DB_PASSWORD = os.Getenv("DB_PASSWORD")
-	defConfig.DB_HOST = os.Getenv("DB_HOST")
-	defConfig.DB_NAME = os.Getenv("DB_NAME")
+	defConfig.DB_USERNAME = os.Getenv("MYSQL_USER")
+	defConfig.DB_PASSWORD = os.Getenv("MYSQL_PASSWORD")
+	defConfig.DB_HOST = os.Getenv("MYSQL_HOST")
+	defConfig.DB_NAME = os.Getenv("MYSQL_DBNAME")
 
-	dbPortConv, errDBPort := strconv.Atoi(os.Getenv("DB_PORT"))
+	dbPortConv, errDBPort := strconv.Atoi(os.Getenv("MYSQL_PORT"))
 
 	if errDBPort != nil {
 		log.Fatal(errDBPort)

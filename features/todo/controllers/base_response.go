@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"skyshi/features/todo"
 
 	"github.com/labstack/echo/v4"
 )
@@ -12,10 +13,16 @@ type BaseResponse struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
+type BaseResponseSlice struct {
+	Status  string   `json:"status"`
+	Massage string   `json:"massage"`
+	Data    []string `json:"data"`
+}
+
 type DeleteResponse struct {
-	Status  string      `json:"status"`
-	Massage string      `json:"massage"`
-	Data    interface{} `json:"data"`
+	Status  string        `json:"status"`
+	Massage string        `json:"massage"`
+	Data    todo.TodoCore `json:"data"`
 }
 
 func NewSuccesResponse(c echo.Context, data interface{}) error {
@@ -23,6 +30,15 @@ func NewSuccesResponse(c echo.Context, data interface{}) error {
 	response.Status = "Success"
 	response.Massage = "Success"
 	response.Data = data
+
+	return c.JSON(http.StatusOK, response)
+}
+
+func NewSuccesResponseSlice(c echo.Context, data []todo.TodoCore) error {
+	response := BaseResponseSlice{}
+	response.Status = "Success"
+	response.Massage = "Success"
+	response.Data = []string{}
 
 	return c.JSON(http.StatusOK, response)
 }
@@ -44,7 +60,16 @@ func FailedResponseNotFound(c echo.Context, data string) error {
 	return c.JSON(http.StatusNotFound, response)
 }
 
-func SuccessDeleteResponse(c echo.Context, data interface{}) error {
+func FailedGetOneTodoNotFound(c echo.Context, data string) error {
+	response := BaseResponse{}
+	response.Status = "Not Found"
+	response.Massage = "Todo with ID " + data + " Not Found"
+	response.Data = nil
+
+	return c.JSON(http.StatusNotFound, response)
+}
+
+func SuccessDeleteResponse(c echo.Context, data todo.TodoCore) error {
 	response := DeleteResponse{}
 	response.Status = "Success"
 	response.Massage = "Success"
@@ -52,10 +77,19 @@ func SuccessDeleteResponse(c echo.Context, data interface{}) error {
 	return c.JSON(http.StatusOK, response)
 }
 
-func FailedResponseBadRequest(c echo.Context) error {
+func FailedResponseBadRequest(c echo.Context, err error) error {
 	response := BaseResponse{}
 	response.Status = "Bad Request"
-	response.Massage = "title cannot be null"
+	response.Massage = err.Error()
+	response.Data = nil
+
+	return c.JSON(http.StatusBadRequest, response)
+}
+
+func FailedResponseActivityBadRequest(c echo.Context) error {
+	response := BaseResponse{}
+	response.Status = "Bad Request"
+	response.Massage = "activity_group_id cannot be null"
 	response.Data = nil
 
 	return c.JSON(http.StatusBadRequest, response)

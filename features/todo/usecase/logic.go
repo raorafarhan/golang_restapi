@@ -16,9 +16,14 @@ func NewTodoUsecase(data todo.DataInterface) todo.UsecaseInterface {
 }
 
 func (usecase *todoUsecase) CreateTodo(data todo.TodoCore) (id int, data1 todo.TodoCore, err error) {
-	if data.Title == "" || data.Activity_Group_Id == 0 {
+	if data.Title == "" {
 		return 0, todo.TodoCore{}, errors.New("title cannot be null")
 	}
+
+	if data.Activity_Group_Id < 1 {
+		return 0, todo.TodoCore{}, errors.New("activity_group_id cannot be null")
+	}
+
 	id, _, err = usecase.todoData.PostTodo(data)
 	if err != nil {
 		return 0, todo.TodoCore{}, err
@@ -28,9 +33,6 @@ func (usecase *todoUsecase) CreateTodo(data todo.TodoCore) (id int, data1 todo.T
 
 func (usecase *todoUsecase) GetAllTodo(activity_group_id int) (data []todo.TodoCore, err error) {
 	data, err = usecase.todoData.SelectAllTodo(activity_group_id)
-	if err != nil {
-		return nil, err
-	}
 	return data, err
 }
 
